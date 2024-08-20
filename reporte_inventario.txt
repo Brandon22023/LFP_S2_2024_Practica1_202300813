@@ -1,0 +1,6 @@
+Reporte de Inventario:
+-----------------------------------------
+Nombre        | Ubicación    | Cantidad | Precio Unitario | Valor Total
+-----------------------------------------
+-----------------------------------------
+Total Valor Inventario:    0.00
