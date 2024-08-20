@@ -45,7 +45,8 @@ PROGRAM practica1
             CASE (1)
                 PRINT *, 'Escriba la Ruta'
                 READ *, filename
-                CALL analizador(filename, inventarios, num_inventario, contador)
+                CALL analizador(filename)
+                print *, 'inventario cargado'
             CASE (2)
                 PRINT *, 'Escriba la Ruta'
                 READ *, filename
@@ -78,21 +79,55 @@ SUBROUTINE parse_line(line, inventario1)
     temp_line = line
     start = 1
 
-    ! Separar las líneas en campos por ;
-    DO i = 1, 4
-        end_pos = INDEX(temp_line(start:), ';')
+
+
+        ! Extraer nombre y ubicacion (hasta el primer ;)
+    end_pos = INDEX(temp_line, ';')
+    IF (end_pos > 0) THEN
+        field(1) = TRIM(temp_line(1:end_pos-1))   ! Extraer la parte antes del primer ;
+        temp_line = temp_line(end_pos+1:)         ! Eliminar la parte extraída
+    ELSE
+        PRINT *, 'Error: Línea no tiene separador ; esperado'
+        RETURN
+    END IF
+
+    ! Separar los otros campos por ; usando un ciclo
+    DO i = 2, 4
+        end_pos = INDEX(temp_line, ';')
         IF (end_pos == 0 .AND. i == 4) THEN
-            field(i) = temp_line(start:)
-        ELSE    
-            field(i) = temp_line(start:start+end_pos-2)
-            start = start + end_pos
+            field(i) = TRIM(temp_line)
+        ELSE
+            field(i) = TRIM(temp_line(1:end_pos-1))
+            temp_line = temp_line(end_pos+1:)
         END IF
     END DO
+    
 
+
+
+
+     ! Leer los campos, asegurarse de que no estén vacíos o mal formateados
     inventario1%nombre = TRIM(field(1))
     inventario1%ubicacion = TRIM(field(2))
-    READ(field(3), '(I10)') inventario1%cantidad
-    READ(field(4), '(F10.2)') inventario1%precio_unitario
+    IF (LEN_TRIM(field(3)) > 0) THEN
+        READ(field(3), '(I10)', IOSTAT=i) inventario1%cantidad
+        IF (i /= 0) THEN
+            PRINT *, 'Error en el formato de cantidad'
+            RETURN
+        END IF
+    ELSE
+        inventario1%cantidad = 0
+    END IF
+
+    IF (LEN_TRIM(field(4)) > 0) THEN
+        READ(field(4), '(F10.2)', IOSTAT=i) inventario1%precio_unitario
+        IF (i /= 0) THEN
+            PRINT *, 'Error en el formato de precio unitario'
+            RETURN
+        END IF
+    ELSE
+        inventario1%precio_unitario = 0.0
+    END IF
     
 END SUBROUTINE parse_line
 
@@ -107,8 +142,7 @@ END SUBROUTINE parse_line
         CHARACTER(LEN=100) :: datos
         INTEGER :: i, start, end_pos
         INTEGER :: contador
-        INTEGER :: num_inventario
-        ALLOCATE(inventarios(num_inventario))
+
 
         OPEN(UNIT=10, File=archivo, STATUS='OLD', ACTION='READ', IOSTAT=ios)
         IF (ios /= 0 ) THEN
@@ -125,10 +159,15 @@ END SUBROUTINE parse_line
             end_pos = SCAN(line(start:), ' ')
             IF (end_pos == 0) THEN
                 comando = TRIM(line(start:))
-                datos = ''
             ELSE 
                 comando = TRIM(line(start:start+end_pos-2))
                 datos = TRIM(line(start+end_pos:))
+            END IF
+            
+            ! Verifica que contador no exceda los límites
+            IF (contador >= MAX_INVENTARIO) THEN
+            PRINT *, 'Límite de inventarios alcanzado'
+            EXIT
             END IF
 
             SELECT CASE (comando)
@@ -152,6 +191,7 @@ END SUBROUTINE parse_line
            
 
         END DO
+        CLOSE(UNIT=10)
 
     END SUBROUTINE analizador
 
