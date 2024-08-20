@@ -147,28 +147,34 @@ SUBROUTINE analizador(archivo, es_mov, contador)
     INTEGER :: ios 
     CHARACTER(LEN=100) :: comando
     CHARACTER(LEN=100) :: datos
-    CHARACTER(LEN=50) :: nombre, ubicacion
-    INTEGER :: cantidad, start, end_pos
+    INTEGER :: start, end_pos
     INTEGER :: contador
 
+    ! Abrir el archivo para lectura
     OPEN(UNIT=10, FILE=archivo, STATUS='OLD', ACTION='READ', IOSTAT=ios)
-    IF (ios /= 0 ) THEN
+    IF (ios /= 0) THEN
         PRINT *, 'Error al abrir el archivo para lectura'
         STOP 
     END IF
 
-    contador = 0
-    ! Asegúrate de que el archivo esté en la posición correcta antes de comenzar a leer.
-    REWIND(10)  ! Reinicia el puntero del archivo al principio
-    DO    
+    ! Asegúrate de que el archivo esté en la posición correcta antes de comenzar a leer
+    REWIND(10)
+
+    ! Inicializa el contador a cero
+    contador = 1
+
+    ! Leer el archivo línea por línea
+    DO
         READ(10, '(A)', IOSTAT=ios) line
-        IF (ios /= 0 ) EXIT
-       
+        IF (ios /= 0) EXIT
+        PRINT *, "Línea leída:", TRIM(line)
+        PRINT *, "Contador:", contador
+
         start = 1
         end_pos = SCAN(line(start:), ' ')
         IF (end_pos == 0) THEN
             comando = TRIM(line(start:))
-        ELSE 
+        ELSE
             comando = TRIM(line(start:start+end_pos-2))
             datos = TRIM(line(start+end_pos:))
         END IF
@@ -207,6 +213,7 @@ SUBROUTINE analizador(archivo, es_mov, contador)
 
 END SUBROUTINE analizador
 
+
 SUBROUTINE generar_informe(inventarios, num_inventario)
     USE InventarioMod, ONLY: Inventario
     TYPE(Inventario), DIMENSION(num_inventario), INTENT(IN) :: inventarios
@@ -228,17 +235,18 @@ SUBROUTINE generar_informe(inventarios, num_inventario)
     WRITE(11, '(A)') '      Equipo        Cantidad       Precio Unitario      Valor Total          Ubicación'
     WRITE(11, '(A)') '-----------------------------------------------------------------------------------------------'
 
-    ! Impresión de datos del inventario
+        ! Impresión de datos del inventario
     DO i = 1, num_inventario
-        valor_total = inventarios(i)%cantidad * inventarios(i)%precio_unitario
-
-        ! Escribir los datos con el formato adecuado
-        WRITE(11, '(A20, I10, F12.2, F12.2, A20)') &
-                TRIM(inventarios(i)%nombre), &
-                inventarios(i)%cantidad, &
-                inventarios(i)%precio_unitario, &
-                valor_total, &
-                TRIM(inventarios(i)%ubicacion)
+        ! Verifica que el nombre del equipo no esté vacío antes de imprimir
+        IF (TRIM(inventarios(i)%nombre) /= '' .AND. inventarios(i)%cantidad > 0 .AND. inventarios(i)%precio_unitario > 0.0) THEN
+            valor_total = inventarios(i)%cantidad * inventarios(i)%precio_unitario
+            WRITE(11, '(A20, I10, F12.2, F12.2, A20)') &
+                    TRIM(inventarios(i)%nombre), &
+                    inventarios(i)%cantidad, &
+                    inventarios(i)%precio_unitario, &
+                    valor_total, &
+                    TRIM(inventarios(i)%ubicacion)
+        END IF
     END DO
 
     ! Cierre del archivo de informe
