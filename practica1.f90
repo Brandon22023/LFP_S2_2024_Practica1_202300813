@@ -229,23 +229,22 @@ SUBROUTINE generar_informe(inventarios, num_inventario)
         STOP
     END IF
 
-    ! Encabezado
+      ! Encabezado
     WRITE(11, '(A)') 'Informe de Inventario:'
     WRITE(11, '(A)') '-----------------------------------------------------------------------------------------------'
-    WRITE(11, '(A)') '      Equipo        Cantidad       Precio Unitario      Valor Total          Ubicación'
+    WRITE(11, '(A15, A15, A20, A20, A20)') 'Equipo', 'Cantidad', 'Precio Unitario', 'Valor Total', 'Ubicación'
     WRITE(11, '(A)') '-----------------------------------------------------------------------------------------------'
 
-        ! Impresión de datos del inventario
+    ! Impresión de datos del inventario
     DO i = 1, num_inventario
-        ! Verifica que el nombre del equipo no esté vacío antes de imprimir
-        IF (TRIM(inventarios(i)%nombre) /= '' .AND. inventarios(i)%cantidad > 0 .AND. inventarios(i)%precio_unitario > 0.0) THEN
+        IF (TRIM(inventarios(i)%nombre) /= '') THEN
             valor_total = inventarios(i)%cantidad * inventarios(i)%precio_unitario
-            WRITE(11, '(A20, I10, F12.2, F12.2, A20)') &
-                    TRIM(inventarios(i)%nombre), &
-                    inventarios(i)%cantidad, &
-                    inventarios(i)%precio_unitario, &
-                    valor_total, &
-                    TRIM(inventarios(i)%ubicacion)
+            WRITE(11, '(A15, I15, F20.2, F20.2, A20)') &
+                TRIM(inventarios(i)%nombre), &
+                inventarios(i)%cantidad, &
+                inventarios(i)%precio_unitario, &
+                valor_total, &
+                TRIM(inventarios(i)%ubicacion)
         END IF
     END DO
 
