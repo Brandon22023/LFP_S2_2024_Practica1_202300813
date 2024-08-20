@@ -75,62 +75,64 @@ SUBROUTINE parse_line(line, inventario1)
     CHARACTER(LEN=200) :: temp_line
     INTEGER :: start, end_pos
     CHARACTER(LEN=50) :: field(4)
+    INTEGER :: temp_int
+    REAL :: temp_real
+    INTEGER :: ios
 
     temp_line = line
     start = 1
 
-
-
-        ! Extraer nombre y ubicacion (hasta el primer ;)
+    ! Extraer nombre
     end_pos = INDEX(temp_line, ';')
     IF (end_pos > 0) THEN
-        field(1) = TRIM(temp_line(1:end_pos-1))   ! Extraer la parte antes del primer ;
-        temp_line = temp_line(end_pos+1:)         ! Eliminar la parte extraída
+        field(1) = TRIM(temp_line(1:end_pos-1))
+        temp_line = temp_line(end_pos+1:)
     ELSE
-        PRINT *, 'Error: Línea no tiene separador ; esperado'
+        PRINT *, 'Error: Línea no tiene el primer separador ; esperado'
         RETURN
     END IF
 
-    ! Separar los otros campos por ; usando un ciclo
-    DO i = 2, 4
-        end_pos = INDEX(temp_line, ';')
-        IF (end_pos == 0 .AND. i == 4) THEN
-            field(i) = TRIM(temp_line)
-        ELSE
-            field(i) = TRIM(temp_line(1:end_pos-1))
-            temp_line = temp_line(end_pos+1:)
-        END IF
-    END DO
-    
-
-
-
-
-     ! Leer los campos, asegurarse de que no estén vacíos o mal formateados
-    inventario1%nombre = TRIM(field(1))
-    inventario1%ubicacion = TRIM(field(2))
-    IF (LEN_TRIM(field(3)) > 0) THEN
-        READ(field(3), '(I10)', IOSTAT=i) inventario1%cantidad
-        IF (i /= 0) THEN
-            PRINT *, 'Error en el formato de cantidad'
-            RETURN
-        END IF
+    ! Extraer cantidad
+    end_pos = INDEX(temp_line, ';')
+    IF (end_pos > 0) THEN
+        field(2) = TRIM(temp_line(1:end_pos-1))
+        temp_line = temp_line(end_pos+1:)
     ELSE
-        inventario1%cantidad = 0
+        PRINT *, 'Error: Línea no tiene el segundo separador ; esperado'
+        RETURN
     END IF
 
-    IF (LEN_TRIM(field(4)) > 0) THEN
-        READ(field(4), '(F10.2)', IOSTAT=i) inventario1%precio_unitario
-        IF (i /= 0) THEN
-            PRINT *, 'Error en el formato de precio unitario'
-            RETURN
-        END IF
+    ! Extraer precio unitario
+    end_pos = INDEX(temp_line, ';')
+    IF (end_pos > 0) THEN
+        field(3) = TRIM(temp_line(1:end_pos-1))
+        temp_line = temp_line(end_pos+1:)
     ELSE
-        inventario1%precio_unitario = 0.0
+        PRINT *, 'Error: Línea no tiene el tercer separador ; esperado'
+        RETURN
     END IF
-    
+
+    ! Extraer ubicación
+    field(4) = TRIM(temp_line)
+
+    ! Asignar valores a los campos del inventario
+    inventario1%nombre = field(1)
+    READ(field(2), *, IOSTAT=ios) temp_int
+    IF (ios /= 0) THEN
+        PRINT *, 'Error en el formato de cantidad: ', TRIM(field(2))
+        RETURN
+    END IF
+    inventario1%cantidad = temp_int
+
+    READ(field(3), *, IOSTAT=ios) temp_real
+    IF (ios /= 0) THEN
+        PRINT *, 'Error en el formato de precio unitario: ', TRIM(field(3))
+        RETURN
+    END IF
+    inventario1%precio_unitario = temp_real
+
+    inventario1%ubicacion = field(4)
 END SUBROUTINE parse_line
-
 
 
     SUBROUTINE analizador(archivo)
@@ -172,8 +174,16 @@ END SUBROUTINE parse_line
 
             SELECT CASE (comando)
                 CASE ('crear_equipo')
+                    PRINT *, ""
+                    print *, "-----------------------------------"
                     PRINT *, 'Crear Equipo'
-                    CALL parse_line(datos,inventarios(contador))
+                    CALL parse_line(datos, inventarios(contador))
+                    PRINT *, 'equipo: ', TRIM(inventarios(contador)%nombre)
+                    PRINT *, 'cantidad: ', inventarios(contador)%cantidad
+                    PRINT *, 'precio unitario: ', inventarios(contador)%precio_unitario
+                    PRINT *, 'ubicacion: ', TRIM(inventarios(contador)%ubicacion)
+                    print *, "-----------------------------------"
+                    
                     contador = contador + 1
 
                 
