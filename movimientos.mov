@@ -1,0 +1,13 @@
+agregar_stock Lapices;100;BodegaA
+eliminar_equipo Computadoras;50;BodegaB
+agregar_stock Lapices;75;BodegaA
+eliminar_equipo Mesas;150;BodegaD
+agregar_stock Impresoras;20;BodegaZ
+eliminar_equipo Monitores;10;BodegaF
+eliminar_equipo Monitores;60;BodegaA
+agregar_stock Escritorios;50;BodegaD
+eliminar_equipo Telefonos;60;BodegaG
+agregar_stock Proyectores;10;BodegaF
+eliminar_equipo Tablets;25;BodegaB
+agregar_stock Camaras;1;BodegaH
+eliminar_equipo Impresoras;10;BodegaC
