@@ -3,6 +3,6 @@ Informe de Inventario:
 ----------------------------------------------------
 Equipo           Cantidad  Precio Unitario  Valor Total   Ubicación
 ----------------------------------------------------
-apices                100      2.50    250.00        BodegaA
-omputadoras            40   3000.00 120000.00        BodegaB
-scritorios            150    100.00  15000.00        BodegaC
+Lapices               100      2.50    250.00        BodegaA
+Computadoras           40   3000.00 120000.00        BodegaB
+Escritorios           150    100.00  15000.00        BodegaC

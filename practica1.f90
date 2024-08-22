@@ -95,10 +95,9 @@ SUBROUTINE parse_line(line, inventario1)
     start = 1
 
     ! Extraer nombre
-    end_pos = INDEX(temp_line, ';')
+    end_pos = INDEX(temp_line, ";")
     IF (end_pos > 0) THEN
         field(1) = TRIM(temp_line(start:end_pos-1))
-        PRINT *, 'Nombre extraído:', field(1)
         temp_line = TRIM(temp_line(end_pos+1:))
     ELSE
         PRINT *, 'Error: Línea no tiene el primer separador ; esperado'
@@ -109,7 +108,6 @@ SUBROUTINE parse_line(line, inventario1)
     end_pos = INDEX(temp_line, ';')
     IF (end_pos > 0) THEN
         field(2) = TRIM(temp_line(start:end_pos-1))
-        PRINT *, 'Cantidad extraída:', field(2)
         temp_line = TRIM(temp_line(end_pos+1:))
     ELSE
         PRINT *, 'Error: Línea no tiene el segundo separador ; esperado'
@@ -120,7 +118,6 @@ SUBROUTINE parse_line(line, inventario1)
     end_pos = INDEX(temp_line, ';')
     IF (end_pos > 0) THEN
         field(3) = TRIM(temp_line(start:end_pos-1))
-        PRINT *, 'Precio Unitario extraído:', field(3)
         temp_line = TRIM(temp_line(end_pos+1:))
     ELSE
         PRINT *, 'Error: Línea no tiene el tercer separador ; esperado'
@@ -129,7 +126,12 @@ SUBROUTINE parse_line(line, inventario1)
 
     ! Extraer ubicación
     field(4) = TRIM(temp_line)
-    PRINT *, 'Ubicación extraída:', field(4)
+
+    ! Mostrar los valores extraídos antes de almacenarlos en inventario
+    PRINT *, 'Nombre:', field(1)
+    PRINT *, 'Cantidad:', field(2)
+    PRINT *, 'Precio Unitario:', field(3)
+    PRINT *, 'Ubicación:', field(4)
 
     ! Asignar valores a los campos del inventario
     inventario1%nombre = field(1)
@@ -149,8 +151,6 @@ SUBROUTINE parse_line(line, inventario1)
 
     inventario1%ubicacion = field(4)
 END SUBROUTINE parse_line
-
-
 SUBROUTINE analizador(archivo, es_mov, contador)
     USE InventarioMod, ONLY: Inventario
     CHARACTER(LEN=100), INTENT(IN) :: archivo
@@ -179,9 +179,11 @@ SUBROUTINE analizador(archivo, es_mov, contador)
         end_pos = SCAN(line(start:), ' ')
         IF (end_pos == 0) THEN
             comando = TRIM(line(start:))
+           
         ELSE
-            comando = TRIM(line(start:start+end_pos-2))
-            datos = TRIM(line(start+end_pos+1:))
+            comando = TRIM(line(start:start+end_pos-1))
+            datos = TRIM(line(start+end_pos:))
+            
         END IF
 
         ! Verifica que contador no exceda los límites
