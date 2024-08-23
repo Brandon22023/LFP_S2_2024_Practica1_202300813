@@ -3,6 +3,23 @@ Informe de Inventario:
 ---------------------------------------------------------------------------------------
 Equipo              Cantidad       Precio Unitario      Valor Total       Ubicación
 ---------------------------------------------------------------------------------------
-Lapices               100               2.50               250.00          BodegaA
+Lapices               275               2.50               687.50          BodegaA
 Computadoras            0            3000.00                 0.00          BodegaB
-Escritorios           375             100.00             37500.00          BodegaC
+Escritorios            75             100.75              7556.25          BodegaC
+Sillas                150              45.00              6750.00          BodegaD
+Impresoras             20             200.00              4000.00          BodegaE
+Monitores              50             250.00             12500.00          BodegaF
+Proyectores            15             500.00              7500.00          BodegaG
+Tablets                40             400.00             16000.00          BodegaH
+Telefonos              80             150.00             12000.00          BodegaI
+Camaras                25             750.00             18750.00          BodegaJ
+Computadoras           30            3000.00             90000.00          BodegaC
+Lapices               200               2.50               500.00          BodegaB
+Sillas                100              45.00              4500.00          BodegaE
+Monitores              40             250.00             10000.00          BodegaA
+Proyectores            20             500.00             10000.00          BodegaF
+Tablets                 0             400.00                 0.00          BodegaB
+Escritorios           100             100.75             10075.00          BodegaD
+Telefonos               0             150.00                 0.00          BodegaG
+Camaras                11             750.00              8250.00          BodegaH
+Impresoras              5             200.00              1000.00          BodegaC
